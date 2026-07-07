@@ -383,67 +383,28 @@ input:checked + .toggle-handle:before {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   margin: 16px 0;
 }
-.table-des{
-    font-weight: 600;
+.table-des {
+  font-weight: 600;
 }
-.table-cat{
-    background-color: var(--back);
-    max-width: fit-content;
-    padding: 2px 4px;
-    border-radius: 4px;
+.table-cat {
+  background-color: var(--back);
+  max-width: fit-content;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
-.table-act{
-    display: flex;
-    gap: 10px;
+.table-act {
+  display: flex;
+  gap: 10px;
 }
-.table-act i{
-    cursor: pointer;
+.table-act i {
+  cursor: pointer;
 }
-.table-act i:nth-child(1){
-    color: blue;
+.table-act i:nth-child(1) {
+  color: blue;
 }
-.table-act i:nth-child(2){
-    color: rgb(191, 0, 0);
+.table-act i:nth-child(2) {
+  color: rgb(191, 0, 0);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .add-tran {
   height: 100%;
@@ -539,4 +500,55 @@ input[type="date"] {
   border-radius: 8px;
   cursor: pointer;
   margin-top: 10px;
+}
+
+#section1 {
+  display: block;
+  margin-left: 260px;
+}
+#section2 {
+  display: none;
+  margin-left: 260px;
+}
+.section2 {
+  margin: 40px;
+  width: 700px;
+}
+.section2 h4 {
+  font-size: 30px;
+}
+.section2 p {
+  color: var(--gray);
+}
+.sec2-in {
+  background-color: var(--card-back);
+  margin-top: 20px;
+  border-radius: 10px;
+  padding: 20px;
+}
+.sec2-in h4 {
+  font-size: 26px;
+}
+.sec2-in p {
+  color: var(--text);
+}
+.sec2-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin: 10px 0;
+}
+.sec2-form-label {
+  width: 100%;
+}
+.sec2-form-button{
+  margin-top: 30px;
+}
+.sec2-form-button button{
+  background-color: var(--aside-transection-back);
+  color: white;
+  padding: 8px 30px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
 }

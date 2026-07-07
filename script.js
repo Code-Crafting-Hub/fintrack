@@ -8,6 +8,7 @@ document.querySelector("#logout").addEventListener("click", () => {
 });
 
 let tranShow = document.querySelector(".add-tran");
+let profileSave;
 
 function displayNone() {
   tranShow.style.display = "none";
@@ -34,6 +35,12 @@ let navName = document.querySelector("#userName");
 let searchInput = document.getElementById("input-search");
 let filterOption = document.getElementById("select-filter");
 
+let section1 = document.getElementById("section1");
+let section2 = document.getElementById("section2");
+let dashboard = document.getElementById("dashboard");
+let settings = document.getElementById("settings");
+let sectionForm = document.querySelector("#sec2-form");
+
 searchInput.addEventListener("input", transDetail);
 filterOption.addEventListener("change", transDetail);
 let transectionDetail = document.querySelector("#tans-detail");
@@ -44,6 +51,68 @@ let tranExpense = 0;
 let tranIncome = 0;
 let userName = user.name;
 let currency = user.currency;
+section2Form();
+
+dashboard.addEventListener("click", () => {
+  section1.style.display = "block";
+  section2.style.display = "none";
+});
+
+document.getElementById("profileCurrency").value = currency;
+settings.addEventListener("click", () => {
+  section1.style.display = "none";
+  section2.style.display = "block";
+});
+
+function section2Form() {
+  sectionForm.innerHTML = `
+<div class="sec2-in">
+  <h4>Profile Details</h4>
+
+  <div class="sec2-form">
+    <div class="sec2-form-label">
+      <p>Full name</p>
+      <input type="text" id="profileName" value="${userName}">
+    </div>
+
+    <div class="sec2-form-label">
+      <p>Primary Currency</p>
+      <select id="profileCurrency">
+        <option value="$" ${currency === "$" ? "selected" : ""}>USD ($)</option>
+        <option value="₹" ${currency === "₹" ? "selected" : ""}>INR (₹)</option>
+        <option value="€" ${currency === "€" ? "selected" : ""}>EUR (€)</option>
+        <option value="£" ${currency === "£" ? "selected" : ""}>GBP (£)</option>
+        <option value="¥" ${currency === "¥" ? "selected" : ""}>JPY (¥)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="sec2-form-button">
+    <button id="saveProfile">Save Changes</button>
+  </div>
+</div>
+`;
+profileSave = document.getElementById("saveProfile");
+}
+
+profileSave.addEventListener("click", () => {
+  const newName = document.getElementById("profileName").value.trim();
+  const newCurrency = document.getElementById("profileCurrency").value;
+
+  user.name = newName;
+  user.currency = newCurrency;
+
+  localStorage.setItem("user", JSON.stringify(user));
+
+  userName = newName;
+  currency = newCurrency;
+  nameUpdate();
+  transectionUpdate();
+  transDetail();
+  renderChart(tranIncome, tranExpense);
+
+  alert("Profile updated successfully!");
+});
 
 function transectionUpdate() {
   b = 0;
@@ -90,10 +159,9 @@ function transDetail() {
     return matchesType && matchesSearch;
   });
 
-  filtered.forEach((value) => {
+  filtered.forEach((value, index) => {
     const color =
       value.type === "Expense" ? "rgb(199, 0, 0)" : "rgb(5, 145, 0)";
-
     transectionDetail.innerHTML += `
       <div class="table-main-grid">
         <div class="table-dat">${value.date}</div>
@@ -103,8 +171,8 @@ function transDetail() {
           ${currency}${value.amount}
         </div>
         <div class="table-act">
-          <i class="ri-pencil-fill"></i>
-          <i class="ri-delete-bin-7-fill"></i>
+          <i onClick="updateTransection('${value.id}')" class="ri-pencil-fill"></i>
+          <i onClick="deleteTransection('${index}')" class="ri-delete-bin-7-fill"></i>
         </div>
       </div>
       <hr>
@@ -156,6 +224,8 @@ nameUpdate();
 transectionUpdate();
 renderChart(tranIncome, tranExpense);
 
+let updateIndex = null;
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   let type = e.target[0].value;
@@ -176,12 +246,17 @@ form.addEventListener("submit", (e) => {
     category,
     id: Date.now().toString(36) + Math.random().toString(36).substring(2),
   };
-  transection.push(data);
+  if (updateIndex !== null) {
+    transection[updateIndex] = data;
+    updateIndex = null;
+  } else {
+    transection.push(data);
+  }
   localStorage.setItem("transection", JSON.stringify(transection));
   transectionUpdate();
   renderChart(tranIncome, tranExpense);
   transDetail();
-  document.querySelector(".add-tran").style.display = "none";
+  tranShow.style.display = "none";
   form.reset();
 });
 
@@ -217,3 +292,23 @@ toggle.addEventListener("change", () => {
     root.style.setProperty("--reset-button", "rgba(255, 0, 0, 0.16)");
   }
 });
+
+function updateTransection(id) {
+  tranShow.style.display = "flex";
+  let tranId = transection.find((elem) => elem.id == id);
+  updateIndex = transection.findIndex((elem) => elem.id == id);
+
+  form[0].value = tranId.type;
+  form[1].value = tranId.description;
+  form[2].value = tranId.amount;
+  form[3].value = tranId.date;
+  form[4].value = tranId.category;
+}
+
+function deleteTransection(index) {
+  transection.splice(index, 1);
+  localStorage.setItem("transection", JSON.stringify(transection));
+  transectionUpdate();
+  renderChart(tranIncome, tranExpense);
+  transDetail();
+}
